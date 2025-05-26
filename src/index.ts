@@ -24,7 +24,7 @@
 // Измененный текст параграфа 1: "5"
 // Измененный текст параграфа 2: "_"
 
-interface textDifferencesParameters {
+interface TextDifferencesParameters {
   originalParagraph: string;
   modifiedParagraph: string;
   originalParagraphIndex: number | null;
@@ -40,8 +40,8 @@ interface textDifferencesParameters {
 export function getTextDifferences(
   originalText: string,
   modifiedText: string
-): textDifferencesParameters {
-  const result: textDifferencesParameters = {
+): TextDifferencesParameters {
+  const result: TextDifferencesParameters = {
     originalParagraph: "",
     modifiedParagraph: "",
     originalParagraphIndex: null,
@@ -77,7 +77,11 @@ export function getTextDifferences(
 
   let diffEndIndex: number = maxParagraphLength;
   for (let i = 1; i < maxParagraphLength; i++) {
-    if (originalText.at(-i) === modifiedText.at(-i)) {
+    if (
+      originalText.at(-i) === modifiedText.at(-i) &&
+      i < maxParagraphLength - diffStartIndex &&
+      diffStartIndex < originalText.length
+    ) {
       continue;
     }
 
