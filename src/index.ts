@@ -1,23 +1,58 @@
-class Student {
-  fullName: string;
-  constructor(
-    public firstName: string,
-    public middleInitial: string,
-    public lastName: string
-  ) {
-    this.fullName = firstName + " " + middleInitial + " " + lastName;
-  }
+"use strict";
+
+// Написать функцию возвращающую измененные параграфы между двумя текстами.
+// Параграф - участок текста отделенный символом новой строки.
+// Параграфы отличаются если их текст не совпадает, либо если индексы начала параграфов в тексте не совпадают.
+// Для каждого измененного параграфа нужно вернуть следующие данные:
+
+//     1. Текст параграфа в тексте 1.
+//     2. Текст параграфа в тексте 2.
+//     3. Индекс параграфа в тексте 1.
+//     4. Индекс параграфа в тексте 2.
+//     5. Данные, описывающие изменения в тексте параграфа:
+//         5.1 Индекс начала изменений в тексте параграфа.
+//         5.2 Измененный текст параграфа 1.
+//         5.2 Измененный текст параграфа 2.
+
+// Предусмотреть вариант удаления/добавления параграфа/текста.
+// Учитывать что текст может быть изменен лишь частично.
+
+// Пример:
+// 12345678
+// 1234_678
+// В этом случае индекс начала изменений текста: 4
+// Измененный текст параграфа 1: "5"
+// Измененный текст параграфа 2: "_"
+
+interface textDifferencesParameters {
+  originalParagraph: string;
+  modifiedParagraph: string;
+  originalParagraphIndex: number | null;
+  modifiedParagraphIndex: number | null;
+
+  diff: {
+    diffStartIndex: number | null;
+    originalTextDiffSequence: string;
+    modifiedTextDiffSequence: string;
+  };
 }
- 
-interface Person {
-  firstName: string;
-  lastName: string;
+
+export function getTextDifferences(
+  originalText: string,
+  modifiedText: string
+): textDifferencesParameters {
+  const result: textDifferencesParameters = {
+    originalParagraph: "",
+    modifiedParagraph: "",
+    originalParagraphIndex: null,
+    modifiedParagraphIndex: null,
+
+    diff: {
+      diffStartIndex: null,
+      originalTextDiffSequence: "",
+      modifiedTextDiffSequence: "",
+    },
+  };
+
+  return result;
 }
- 
-function greeter(person: Person) {
-  return "Hello, " + person.firstName + " " + person.lastName;
-}
- 
-let user = new Student("Jane", "M.", "User");
- 
-document.body.textContent = greeter(user);
