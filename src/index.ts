@@ -54,5 +54,48 @@ export function getTextDifferences(
     },
   };
 
+  if (originalText === modifiedText) {
+    return result;
+  }
+
+  result.originalParagraph = originalText;
+  result.modifiedParagraph = modifiedText;
+  result.originalParagraphIndex = 0;
+  result.modifiedParagraphIndex = 0;
+
+  const maxParagraphLength = Math.max(originalText.length, modifiedText.length);
+
+  let diffStartIndex: number = 0;
+  for (let i = 0; i < maxParagraphLength; i++) {
+    if (originalText.at(i) === modifiedText.at(i)) {
+      continue;
+    }
+
+    diffStartIndex = i;
+    break;
+  }
+
+  let diffEndIndex: number = maxParagraphLength;
+  for (let i = 1; i < maxParagraphLength; i++) {
+    if (originalText.at(-i) === modifiedText.at(-i)) {
+      continue;
+    }
+
+    diffEndIndex = i;
+    break;
+  }
+
+  result.diff.diffStartIndex = diffStartIndex;
+
+  result.diff.originalTextDiffSequence = originalText.slice(
+    diffStartIndex,
+    originalText.length - diffEndIndex + 1
+  );
+
+  result.diff.modifiedTextDiffSequence = modifiedText.slice(
+    diffStartIndex,
+    modifiedText.length - diffEndIndex + 1
+  );
+
   return result;
 }
