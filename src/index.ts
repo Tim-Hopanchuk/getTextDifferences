@@ -24,82 +24,49 @@
 // Измененный текст параграфа 1: "5"
 // Измененный текст параграфа 2: "_"
 
-interface TextDifferencesParameters {
+interface ParagraphDiff {
+  diffStartIndex: number | null;
+  originalChangedText: string;
+  modifiedChangedText: string;
+}
+
+interface TextDiff {
   originalParagraph: string;
   modifiedParagraph: string;
   originalParagraphIndex: number | null;
   modifiedParagraphIndex: number | null;
 
-  diff: {
-    diffStartIndex: number | null;
-    originalTextDiffSequence: string;
-    modifiedTextDiffSequence: string;
-  };
+  diff: ParagraphDiff;
 }
 
-export function getTextDifferences(
+export function getParagraphDiff(
+  originalParagraph: string,
+  modifiedParagraph: string
+): ParagraphDiff {
+  const result: ParagraphDiff = {
+    diffStartIndex: null,
+    originalChangedText: "",
+    modifiedChangedText: "",
+  };
+
+  return result;
+}
+
+export function getTextDiff(
   originalText: string,
   modifiedText: string
-): TextDifferencesParameters {
-  const result: TextDifferencesParameters = {
+): TextDiff {
+  const result: TextDiff = {
     originalParagraph: "",
     modifiedParagraph: "",
     originalParagraphIndex: null,
     modifiedParagraphIndex: null,
-
     diff: {
       diffStartIndex: null,
-      originalTextDiffSequence: "",
-      modifiedTextDiffSequence: "",
+      originalChangedText: "",
+      modifiedChangedText: "",
     },
   };
-
-  if (originalText === modifiedText) {
-    return result;
-  }
-
-  result.originalParagraph = originalText;
-  result.modifiedParagraph = modifiedText;
-  result.originalParagraphIndex = 0;
-  result.modifiedParagraphIndex = 0;
-
-  const maxParagraphLength = Math.max(originalText.length, modifiedText.length);
-
-  let diffStartIndex: number = 0;
-  for (let i = 0; i < maxParagraphLength; i++) {
-    if (originalText.at(i) === modifiedText.at(i)) {
-      continue;
-    }
-
-    diffStartIndex = i;
-    break;
-  }
-
-  let diffEndIndex: number = maxParagraphLength;
-  for (let i = 1; i < maxParagraphLength; i++) {
-    if (
-      originalText.at(-i) === modifiedText.at(-i) &&
-      i < maxParagraphLength - diffStartIndex &&
-      diffStartIndex < originalText.length
-    ) {
-      continue;
-    }
-
-    diffEndIndex = i;
-    break;
-  }
-
-  result.diff.diffStartIndex = diffStartIndex;
-
-  result.diff.originalTextDiffSequence = originalText.slice(
-    diffStartIndex,
-    originalText.length - diffEndIndex + 1
-  );
-
-  result.diff.modifiedTextDiffSequence = modifiedText.slice(
-    diffStartIndex,
-    modifiedText.length - diffEndIndex + 1
-  );
 
   return result;
 }
