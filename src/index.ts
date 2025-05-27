@@ -43,13 +43,46 @@ export function getParagraphDiff(
   originalParagraph: string,
   modifiedParagraph: string
 ): ParagraphDiff {
-  const result: ParagraphDiff = {
-    diffStartIndex: null,
-    originalChangedText: "",
-    modifiedChangedText: "",
-  };
+  if (originalParagraph === modifiedParagraph) {
+    return {
+      diffStartIndex: null,
+      originalChangedText: "",
+      modifiedChangedText: "",
+    };
+  }
 
-  return result;
+  let diffStartIndex = 0;
+  while (
+    diffStartIndex < originalParagraph.length &&
+    diffStartIndex < modifiedParagraph.length &&
+    originalParagraph[diffStartIndex] === modifiedParagraph[diffStartIndex]
+  ) {
+    diffStartIndex++;
+  }
+
+  let originalDiffEndIndex = originalParagraph.length - 1;
+  let modifiedDiffEndIndex = modifiedParagraph.length - 1;
+  while (
+    originalDiffEndIndex >= diffStartIndex &&
+    modifiedDiffEndIndex >= diffStartIndex &&
+    originalParagraph[originalDiffEndIndex] ===
+      modifiedParagraph[modifiedDiffEndIndex]
+  ) {
+    originalDiffEndIndex--;
+    modifiedDiffEndIndex--;
+  }
+
+  return {
+    diffStartIndex: diffStartIndex,
+    originalChangedText: originalParagraph.slice(
+      diffStartIndex,
+      originalDiffEndIndex + 1
+    ),
+    modifiedChangedText: modifiedParagraph.slice(
+      diffStartIndex,
+      modifiedDiffEndIndex + 1
+    ),
+  };
 }
 
 export function getTextDiff(

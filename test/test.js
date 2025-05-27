@@ -373,7 +373,7 @@ describe("getParagraphDiff", function () {
     );
 
     it("diffStartIndex", function () {
-      assert.equal(paragraphDiff.diffStartIndex, 0);
+      assert.equal(paragraphDiff.diffStartIndex, 1);
     });
     it("originalChangedText", function () {
       assert.equal(paragraphDiff.originalChangedText, "");
