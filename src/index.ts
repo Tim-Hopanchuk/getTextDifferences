@@ -1,29 +1,5 @@
 "use strict";
 
-// Написать функцию возвращающую измененные параграфы между двумя текстами.
-// Параграф - участок текста отделенный символом новой строки.
-// Параграфы отличаются если их текст не совпадает, либо если индексы начала параграфов в тексте не совпадают.
-// Для каждого измененного параграфа нужно вернуть следующие данные:
-
-//     1. Текст параграфа в тексте 1.
-//     2. Текст параграфа в тексте 2.
-//     3. Индекс параграфа в тексте 1.
-//     4. Индекс параграфа в тексте 2.
-//     5. Данные, описывающие изменения в тексте параграфа:
-//         5.1 Индекс начала изменений в тексте параграфа.
-//         5.2 Измененный текст параграфа 1.
-//         5.2 Измененный текст параграфа 2.
-
-// Предусмотреть вариант удаления/добавления параграфа/текста.
-// Учитывать что текст может быть изменен лишь частично.
-
-// Пример:
-// 12345678
-// 1234_678
-// В этом случае индекс начала изменений текста: 4
-// Измененный текст параграфа 1: "5"
-// Измененный текст параграфа 2: "_"
-
 interface ParagraphDiff {
   diffStartIndex: number | null;
   originalChangedText: string;
@@ -51,7 +27,7 @@ export function getParagraphDiff(
     };
   }
 
-  let diffStartIndex = 0;
+  let diffStartIndex: number = 0;
   while (
     diffStartIndex < originalParagraph.length &&
     diffStartIndex < modifiedParagraph.length &&
@@ -60,8 +36,8 @@ export function getParagraphDiff(
     diffStartIndex++;
   }
 
-  let originalDiffEndIndex = originalParagraph.length - 1;
-  let modifiedDiffEndIndex = modifiedParagraph.length - 1;
+  let originalDiffEndIndex: number = originalParagraph.length - 1;
+  let modifiedDiffEndIndex: number = modifiedParagraph.length - 1;
   while (
     originalDiffEndIndex >= diffStartIndex &&
     modifiedDiffEndIndex >= diffStartIndex &&
@@ -89,7 +65,7 @@ export function getTextDiff(
   originalText: string,
   modifiedText: string
 ): TextDiff {
-  const result: TextDiff = {
+  const diffResult: TextDiff = {
     originalParagraph: "",
     modifiedParagraph: "",
     originalParagraphIndex: null,
@@ -101,5 +77,43 @@ export function getTextDiff(
     },
   };
 
-  return result;
+  if (originalText === modifiedText) {
+    return diffResult;
+  }
+
+  const originalParagraphs: string[] = originalText.split("\n");
+  const modifiedParagraphs: string[] = modifiedText.split("\n");
+
+  for (let i = 0; i < Math.max(originalParagraphs.length, modifiedParagraphs.length); i++) {
+    if (originalParagraphs[i] === modifiedParagraphs[i]) {
+      continue;
+    }
+
+    diffResult.originalParagraphIndex = i;
+    diffResult.modifiedParagraphIndex = i;
+
+    //deleted paragraph check
+    if (originalParagraphs.slice(i + 1).join("") === modifiedParagraphs.slice(i).join("")) {
+      diffResult.originalParagraph = originalParagraphs[i];
+      diffResult.modifiedParagraph = "";
+      diffResult.diff = getParagraphDiff(originalParagraphs[i], "");
+      return diffResult;
+    }
+    
+    //addeed paragraph check
+    if (modifiedParagraphs.slice(i + 1).join("") === originalParagraphs.slice(i).join("")) {
+      diffResult.originalParagraph = "";
+      diffResult.modifiedParagraph = modifiedParagraphs[i];
+      diffResult.diff = getParagraphDiff("", modifiedParagraphs[i]);
+      return diffResult;
+    }
+
+    diffResult.originalParagraph = originalParagraphs[i];
+    diffResult.modifiedParagraph = modifiedParagraphs[i];
+    diffResult.diff = getParagraphDiff(originalParagraphs[i], modifiedParagraphs[i]);
+
+    break;
+  }
+
+  return diffResult;
 }

@@ -53,7 +53,7 @@ console.log(diff);
   originalParagraphIndex: 1,
   modifiedParagraphIndex: 1,
   diff: {
-    diffStartIndex: 30,
+    diffStartIndex: 27,
     originalChangedText: "changes.",
     modifiedChangedText: "has changed!"
   }
