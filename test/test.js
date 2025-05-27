@@ -484,20 +484,354 @@ describe("getParagraphDiff", function () {
   });
 });
 
-//Multiple paragraphs unchanged
-//Paragraphs replaced with a single line
+describe("getTextDiff", function () {
+   //Changes in the first paragraph
+  describe("Changes in the first paragraph", function () {
+    const originalText = "0123456789p1\n0123456789p2\n0123456789p3";
+    const modifiedText = "01234_6789p1\n0123456789p2\n0123456789p3";
+    const textDiff = getTextDiff(originalText, modifiedText);
 
-//Changes in the first paragraph
-//Changes in the middle paragraph
-//Changes in the last paragraph
+    it("originalParagraph", function () {
+      assert.equal(textDiff.originalParagraph, "0123456789p1");
+    });
+    it("modifiedParagraph", function () {
+      assert.equal(textDiff.modifiedParagraph, "01234_6789p1");
+    });
+    it("originalParagraphIndex", function () {
+      assert.equal(textDiff.originalParagraphIndex, 0);
+    });
+    it("modifiedParagraphIndex", function () {
+      assert.equal(textDiff.modifiedParagraphIndex, 0);
+    });
+    it("diffStartIndex", function () {
+      assert.equal(textDiff.diff.diffStartIndex, 5);
+    });
+    it("originalChangedText", function () {
+      assert.equal(textDiff.diff.originalChangedText, "5");
+    });
+    it("modifiedChangedText", function () {
+      assert.equal(textDiff.diff.modifiedChangedText, "_");
+    });
+  });
 
-//All paragraphs deleted
-//Deleted the first paragraph
-//Deleted the middle paragraph
-//Deleted the last paragraph
+  //Changes in the middle paragraph
+  describe("Changes in the middle paragraph", function () {
+    const originalText = "0123456789p1\n0123456789p2\n0123456789p3";
+    const modifiedText = "0123456789p1\n012345_6789p2\n0123456789p3";
+    const textDiff = getTextDiff(originalText, modifiedText);
 
-//Added a paragraph at the beginning
-//Added a paragraph in the middle
-//Added a paragraph at the end
+    it("originalParagraph", function () {
+      assert.equal(textDiff.originalParagraph, "0123456789p2");
+    });
+    it("modifiedParagraph", function () {
+      assert.equal(textDiff.modifiedParagraph, "012345_6789p2");
+    });
+    it("originalParagraphIndex", function () {
+      assert.equal(textDiff.originalParagraphIndex, 1);
+    });
+    it("modifiedParagraphIndex", function () {
+      assert.equal(textDiff.modifiedParagraphIndex, 1);
+    });
+    it("diffStartIndex", function () {
+      assert.equal(textDiff.diff.diffStartIndex, 6);
+    });
+    it("originalChangedText", function () {
+      assert.equal(textDiff.diff.originalChangedText, "");
+    });
+    it("modifiedChangedText", function () {
+      assert.equal(textDiff.diff.modifiedChangedText, "_");
+    });
+  });
 
-//Repeated paragraphs
+  //Changes in the last paragraph
+  describe("Changes in the last paragraph", function () {
+    const originalText = "0123456789p1\n0123456789p2\n0123456789p3";
+    const modifiedText = "0123456789p1\n0123456789p2\n012346789p3";
+    const textDiff = getTextDiff(originalText, modifiedText);
+
+    it("originalParagraph", function () {
+      assert.equal(textDiff.originalParagraph, "0123456789p3");
+    });
+    it("modifiedParagraph", function () {
+      assert.equal(textDiff.modifiedParagraph, "012346789p3");
+    });
+    it("originalParagraphIndex", function () {
+      assert.equal(textDiff.originalParagraphIndex, 2);
+    });
+    it("modifiedParagraphIndex", function () {
+      assert.equal(textDiff.modifiedParagraphIndex, 2);
+    });
+    it("diffStartIndex", function () {
+      assert.equal(textDiff.diff.diffStartIndex, 5);
+    });
+    it("originalChangedText", function () {
+      assert.equal(textDiff.diff.originalChangedText, "5");
+    });
+    it("modifiedChangedText", function () {
+      assert.equal(textDiff.diff.modifiedChangedText, "");
+    });
+  });
+
+  //Multiple paragraphs unchanged
+  describe("Multiple paragraphs unchanged", function () {
+    const originalText = "0123456789p1\n0123456789p2\n0123456789p3";
+    const modifiedText = "0123456789p1\n0123456789p2\n0123456789p3";
+    const textDiff = getTextDiff(originalText, modifiedText);
+
+    it("originalParagraph", function () {
+      assert.equal(textDiff.originalParagraph, "");
+    });
+    it("modifiedParagraph", function () {
+      assert.equal(textDiff.modifiedParagraph, "");
+    });
+    it("originalParagraphIndex", function () {
+      assert.equal(textDiff.originalParagraphIndex, null);
+    });
+    it("modifiedParagraphIndex", function () {
+      assert.equal(textDiff.modifiedParagraphIndex, null);
+    });
+    it("diffStartIndex", function () {
+      assert.equal(textDiff.diff.diffStartIndex, null);
+    });
+    it("originalChangedText", function () {
+      assert.equal(textDiff.diff.originalChangedText, "");
+    });
+    it("modifiedChangedText", function () {
+      assert.equal(textDiff.diff.modifiedChangedText, "");
+    });
+  });
+
+  //Paragraphs replaced with a single line
+  describe("Paragraphs replaced with a single line", function () {
+    const originalText = "0123456789p1\n0123456789p2\n0123456789p3";
+    const modifiedText = "abc";
+    const textDiff = getTextDiff(originalText, modifiedText);
+
+    it("originalParagraph", function () {
+      assert.equal(textDiff.originalParagraph, "0123456789p1");
+    });
+    it("modifiedParagraph", function () {
+      assert.equal(textDiff.modifiedParagraph, "abc");
+    });
+    it("originalParagraphIndex", function () {
+      assert.equal(textDiff.originalParagraphIndex, 0);
+    });
+    it("modifiedParagraphIndex", function () {
+      assert.equal(textDiff.modifiedParagraphIndex, 0);
+    });
+    it("diffStartIndex", function () {
+      assert.equal(textDiff.diff.diffStartIndex, 0);
+    });
+    it("originalChangedText", function () {
+      assert.equal(textDiff.diff.originalChangedText, "0123456789p1");
+    });
+    it("modifiedChangedText", function () {
+      assert.equal(textDiff.diff.modifiedChangedText, "abc");
+    });
+  });
+
+  //All paragraphs deleted
+  describe("All paragraphs deleted", function () {
+    const originalText = "0123456789p1\n0123456789p2\n0123456789p3";
+    const modifiedText = "";
+    const textDiff = getTextDiff(originalText, modifiedText);
+
+    it("originalParagraph", function () {
+      assert.equal(textDiff.originalParagraph, "0123456789p1");
+    });
+    it("modifiedParagraph", function () {
+      assert.equal(textDiff.modifiedParagraph, "");
+    });
+    it("originalParagraphIndex", function () {
+      assert.equal(textDiff.originalParagraphIndex, 0);
+    });
+    it("modifiedParagraphIndex", function () {
+      assert.equal(textDiff.modifiedParagraphIndex, 0);
+    });
+    it("diffStartIndex", function () {
+      assert.equal(textDiff.diff.diffStartIndex, 0);
+    });
+    it("originalChangedText", function () {
+      assert.equal(textDiff.diff.originalChangedText, "0123456789p1");
+    });
+    it("modifiedChangedText", function () {
+      assert.equal(textDiff.diff.modifiedChangedText, "");
+    });
+  });
+
+  //Deleted the first paragraph
+  describe("Deleted the first paragraph", function () {
+    const originalText = "0123456789p1\n0123456789p2\n0123456789p3";
+    const modifiedText = "0123456789p2\n0123456789p3";
+    const textDiff = getTextDiff(originalText, modifiedText);
+
+    it("originalParagraph", function () {
+      assert.equal(textDiff.originalParagraph, "0123456789p1");
+    });
+    it("modifiedParagraph", function () {
+      assert.equal(textDiff.modifiedParagraph, "");
+    });
+    it("originalParagraphIndex", function () {
+      assert.equal(textDiff.originalParagraphIndex, 0);
+    });
+    it("modifiedParagraphIndex", function () {
+      assert.equal(textDiff.modifiedParagraphIndex, 0);
+    });
+    it("diffStartIndex", function () {
+      assert.equal(textDiff.diff.diffStartIndex, 0);
+    });
+    it("originalChangedText", function () {
+      assert.equal(textDiff.diff.originalChangedText, "0123456789p1");
+    });
+    it("modifiedChangedText", function () {
+      assert.equal(textDiff.diff.modifiedChangedText, "");
+    });
+  });
+
+  //Deleted the middle paragraph
+  describe("Deleted the middle paragraph", function () {
+    const originalText = "0123456789p1\n0123456789p2\n0123456789p3";
+    const modifiedText = "0123456789p1\n0123456789p3";
+    const textDiff = getTextDiff(originalText, modifiedText);
+
+    it("originalParagraph", function () {
+      assert.equal(textDiff.originalParagraph, "0123456789p2");
+    });
+    it("modifiedParagraph", function () {
+      assert.equal(textDiff.modifiedParagraph, "");
+    });
+    it("originalParagraphIndex", function () {
+      assert.equal(textDiff.originalParagraphIndex, 1);
+    });
+    it("modifiedParagraphIndex", function () {
+      assert.equal(textDiff.modifiedParagraphIndex, 1);
+    });
+    it("diffStartIndex", function () {
+      assert.equal(textDiff.diff.diffStartIndex, 0);
+    });
+    it("originalChangedText", function () {
+      assert.equal(textDiff.diff.originalChangedText, "0123456789p2");
+    });
+    it("modifiedChangedText", function () {
+      assert.equal(textDiff.diff.modifiedChangedText, "");
+    });
+  });
+
+  //Deleted the last paragraph
+  describe("Deleted the last paragraph", function () {
+    const originalText = "0123456789p1\n0123456789p2\n0123456789p3";
+    const modifiedText = "0123456789p1\n0123456789p2";
+    const textDiff = getTextDiff(originalText, modifiedText);
+
+    it("originalParagraph", function () {
+      assert.equal(textDiff.originalParagraph, "0123456789p3");
+    });
+    it("modifiedParagraph", function () {
+      assert.equal(textDiff.modifiedParagraph, "");
+    });
+    it("originalParagraphIndex", function () {
+      assert.equal(textDiff.originalParagraphIndex, 2);
+    });
+    it("modifiedParagraphIndex", function () {
+      assert.equal(textDiff.modifiedParagraphIndex, 2);
+    });
+    it("diffStartIndex", function () {
+      assert.equal(textDiff.diff.diffStartIndex, 0);
+    });
+    it("originalChangedText", function () {
+      assert.equal(textDiff.diff.originalChangedText, "0123456789p3");
+    });
+    it("modifiedChangedText", function () {
+      assert.equal(textDiff.diff.modifiedChangedText, "");
+    });
+  });
+
+  //Added a paragraph at the beginning
+  describe("Added a paragraph at the beginning", function () {
+    const originalText = "0123456789p1\n0123456789p2\n0123456789p3";
+    const modifiedText =
+      "0123456789p0\n0123456789p1\n0123456789p2\n0123456789p3";
+    const textDiff = getTextDiff(originalText, modifiedText);
+
+    it("originalParagraph", function () {
+      assert.equal(textDiff.originalParagraph, "");
+    });
+    it("modifiedParagraph", function () {
+      assert.equal(textDiff.modifiedParagraph, "0123456789p0");
+    });
+    it("originalParagraphIndex", function () {
+      assert.equal(textDiff.originalParagraphIndex, 0);
+    });
+    it("modifiedParagraphIndex", function () {
+      assert.equal(textDiff.modifiedParagraphIndex, 0);
+    });
+    it("diffStartIndex", function () {
+      assert.equal(textDiff.diff.diffStartIndex, 0);
+    });
+    it("originalChangedText", function () {
+      assert.equal(textDiff.diff.originalChangedText, "");
+    });
+    it("modifiedChangedText", function () {
+      assert.equal(textDiff.diff.modifiedChangedText, "0123456789p0");
+    });
+  });
+
+  //Added a paragraph in the middle
+  describe("Added a paragraph in the middle", function () {
+    const originalText = "0123456789p1\n0123456789p2\n0123456789p3";
+    const modifiedText =
+      "0123456789p1\n0123456789p2\n0123456789p4\n0123456789p3";
+    const textDiff = getTextDiff(originalText, modifiedText);
+
+    it("originalParagraph", function () {
+      assert.equal(textDiff.originalParagraph, "");
+    });
+    it("modifiedParagraph", function () {
+      assert.equal(textDiff.modifiedParagraph, "0123456789p4");
+    });
+    it("originalParagraphIndex", function () {
+      assert.equal(textDiff.originalParagraphIndex, 2);
+    });
+    it("modifiedParagraphIndex", function () {
+      assert.equal(textDiff.modifiedParagraphIndex, 2);
+    });
+    it("diffStartIndex", function () {
+      assert.equal(textDiff.diff.diffStartIndex, 0);
+    });
+    it("originalChangedText", function () {
+      assert.equal(textDiff.diff.originalChangedText, "");
+    });
+    it("modifiedChangedText", function () {
+      assert.equal(textDiff.diff.modifiedChangedText, "0123456789p4");
+    });
+  });
+
+  //Added a paragraph at the end
+    describe("Added a paragraph at the end", function () {
+    const originalText = "0123456789p1\n0123456789p2\n0123456789p3";
+    const modifiedText = "0123456789p1\n0123456789p2\n0123456789p3\n0123456789p4";
+    const textDiff = getTextDiff(originalText, modifiedText);
+
+    it("originalParagraph", function () {
+      assert.equal(textDiff.originalParagraph, "");
+    });
+    it("modifiedParagraph", function () {
+      assert.equal(textDiff.modifiedParagraph, "0123456789p4");
+    });
+    it("originalParagraphIndex", function () {
+      assert.equal(textDiff.originalParagraphIndex, 3);
+    });
+    it("modifiedParagraphIndex", function () {
+      assert.equal(textDiff.modifiedParagraphIndex, 3);
+    });
+    it("diffStartIndex", function () {
+      assert.equal(textDiff.diff.diffStartIndex, 0);
+    });
+    it("originalChangedText", function () {
+      assert.equal(textDiff.diff.originalChangedText, "");
+    });
+    it("modifiedChangedText", function () {
+      assert.equal(textDiff.diff.modifiedChangedText, "0123456789p4");
+    });
+  });
+});
